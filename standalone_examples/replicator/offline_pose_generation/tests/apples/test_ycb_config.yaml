@@ -1,0 +1,65 @@
+# DO NOT MODIFY OR TESTS WILL FAIL 
+---
+CONFIG:
+  renderer: RayTracedLighting
+  headless: false
+  width: 1280
+  height: 720
+CLASS_NAME_TO_INDEX:
+  _01_apple: 1
+  _02_apple: 2
+  _03_apple: 3
+  _04_apple: 4
+  _05_apple: 5
+OBJECTS_TO_GENERATE:
+- { part_name: 001_apple, num: 1, prim_type: _01_apple } 
+- { part_name: 002_apple, num: 1, prim_type: _02_apple }
+- { part_name: 003_apple, num: 1, prim_type: _03_apple }
+- { part_name: 004_apple, num: 1, prim_type: _04_apple }
+- { part_name: 005_apple, num: 1, prim_type: _05_apple }
+FORCE_RANGE: 30
+WIDTH: 1280
+HEIGHT: 720
+F_X: 644.219543457031
+F_Y: 644.219543457031
+C_X: 638.51171875
+C_Y: 358.90625
+HORIZONTAL_APERTURE: 20.955
+NUM_LIGHTS: 6
+MIN_DISTANCE: 1.0
+MAX_DISTANCE: 1.0
+CAMERA_RIG_ROTATION:
+- 0
+- 0
+- 0
+CAMERA_ROTATION:
+- 180
+- 0
+- 0
+MIN_ROTATION_RANGE:
+- 100
+- 100
+- 100
+MAX_ROTATION_RANGE:
+- 100
+- 100
+- 100
+FRACTION_TO_SCREEN_EDGE: 0.0
+SHAPE_SCALE:
+- 0.05
+- 0.05
+- 0.05
+SHAPE_MASS: 1
+OBJECT_SCALE:
+- 1
+- 1
+- 1
+OBJECT_MASS: 1
+NUM_MESH_SHAPES: 0
+NUM_MESH_OBJECTS: 0
+MESH_FRACTION_GLASS: 0.15
+NUM_DOME_SHAPES: 0
+NUM_DOME_OBJECTS: 0
+DOME_FRACTION_GLASS: 0.2
+DOME_TEXTURES: []
+MESH_FILENAMES: []
