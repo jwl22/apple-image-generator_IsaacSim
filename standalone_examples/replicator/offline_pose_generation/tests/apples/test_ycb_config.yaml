@@ -6,24 +6,24 @@ CONFIG:
   width: 1280
   height: 720
 CLASS_NAME_TO_INDEX:
-  _01_apple: 1
-  _02_apple: 2
-  _03_apple: 3
-  _04_apple: 4
-  _05_apple: 5
+  output: 1
+  apple2_uv: 2
+  apple_2_5k: 3
+  red_apple: 4
+  applei_000: 5
 OBJECTS_TO_GENERATE:
-- { part_name: 001_apple, num: 1, prim_type: _01_apple } 
-- { part_name: 002_apple, num: 1, prim_type: _02_apple }
-- { part_name: 003_apple, num: 1, prim_type: _03_apple }
-- { part_name: 004_apple, num: 1, prim_type: _04_apple }
-- { part_name: 005_apple, num: 1, prim_type: _05_apple }
+- { part_name: apple1, num: 1, prim_type: output } 
+- { part_name: apple2, num: 1, prim_type: apple2_uv }
+- { part_name: apple3, num: 1, prim_type: apple_2_5k }
+- { part_name: apple4, num: 1, prim_type: red_apple }
+- { part_name: apple5, num: 1, prim_type: applei_000 }
 FORCE_RANGE: 30
 WIDTH: 1280
 HEIGHT: 720
-F_X: 644.219543457031
-F_Y: 644.219543457031
-C_X: 638.51171875
-C_Y: 358.90625
+F_X: 698.3570
+F_Y: 698.1600
+C_X: 640.1320
+C_Y: 361.3480
 HORIZONTAL_APERTURE: 20.955
 NUM_LIGHTS: 6
 MIN_DISTANCE: 1.0

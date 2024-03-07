@@ -20,12 +20,12 @@ import yaml
 from omni.isaac.kit import SimulationApp
 
 parser = argparse.ArgumentParser("Pose Generation data generator")
-parser.add_argument("--num_mesh", type=int, default=30, help="Number of frames to record similar to MESH dataset")
-parser.add_argument("--num_dome", type=int, default=30, help="Number of frames to record similar to DOME dataset")
+parser.add_argument("--num_mesh", type=int, default=10, help="Number of frames to record similar to MESH dataset")
+parser.add_argument("--num_dome", type=int, default=10, help="Number of frames to record similar to DOME dataset")
 parser.add_argument(
     "--dome_interval",
     type=int,
-    default=1,
+    default=10,
     help="Number of frames to capture before switching DOME background. When generating large datasets, increasing this interval will reduce time taken. A good value to set is 10.",
 )
 parser.add_argument("--output_folder", "-o", type=str, default="output", help="Output directory.")
@@ -36,6 +36,7 @@ parser.add_argument(
     default=None,
     help="Bucket name to store output in. See naming rules: https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html",
 )
+parser.add_argument("--s3_region", type=str, default="us-east-1", help="s3 region.")
 parser.add_argument("--endpoint", type=str, default=None, help="s3 endpoint to write to.")
 parser.add_argument(
     "--writer",
@@ -107,6 +108,7 @@ class RandomScenario(torch.utils.data.IterableDataset):
         output_folder,
         use_s3=False,
         endpoint="",
+        s3_region="us-east-1",
         writer="ycbvideo",
         bucket="",
         test=False,
@@ -129,7 +131,6 @@ class RandomScenario(torch.utils.data.IterableDataset):
         self.dome_texture_path = assets_root_path + "/NVIDIA/Assets/Skies/"
         self.ycb_asset_path = assets_root_path + "/Isaac/Props/YCB/Axis_Aligned/"
         # self.asset_path = assets_root_path + "/Isaac/Props/YCB/Axis_Aligned/"
-        # self.ycb_asset_path = "/Users/jung/6D_pose/apple_usd/"
         self.asset_path = "omniverse://localhost/Users/jung/6D_pose/apple_usd/"
 
         self.train_parts = []
@@ -147,6 +148,7 @@ class RandomScenario(torch.utils.data.IterableDataset):
         self._output_folder = output_folder if use_s3 else os.path.join(os.getcwd(), output_folder)
         self.use_s3 = use_s3
         self.endpoint = endpoint
+        self.s3_region = s3_region
         self.bucket = bucket
 
         self.writer_config = {
@@ -154,6 +156,7 @@ class RandomScenario(torch.utils.data.IterableDataset):
             "use_s3": self.use_s3,
             "bucket_name": self.bucket,
             "endpoint_url": self.endpoint,
+            "s3_region": self.s3_region,
             "train_size": self.train_size,
         }
 
@@ -199,9 +202,6 @@ class RandomScenario(torch.utils.data.IterableDataset):
         if not self.test:
             self._setup_randomizers()
 
-        # Generate the replicator graphs without triggering any writing
-        rep.orchestrator.preview()
-
         # Update the app a few times to make sure the materials are fully loaded and world scene objects are registered
         for _ in range(5):
             kit.app.update()
@@ -212,6 +212,9 @@ class RandomScenario(torch.utils.data.IterableDataset):
         self.writer.attach([self.render_product])
 
         self.dome_distractors.set_visible(False)
+
+        # Generate the replicator graphs without triggering any writing
+        rep.orchestrator.preview()
 
     def _setup_camera(self):
         focal_length = config_data["HORIZONTAL_APERTURE"] * config_data["F_X"] / config_data["WIDTH"]
@@ -362,7 +365,7 @@ class RandomScenario(torch.utils.data.IterableDataset):
         for object in OBJECTS_TO_GENERATE:
             for prim_idx in range(object["num"]):
                 part_name = object["part_name"]
-                ref_path = self.asset_path + part_name + "/" + part_name + ".usd"
+                ref_path = self.asset_path + part_name + ".usd"
                 prim_type = object["prim_type"]
 
                 if self.writer_helper == YCBVideoWriter and prim_type not in config_data["CLASS_NAME_TO_INDEX"]:
@@ -500,7 +503,7 @@ class RandomScenario(torch.utils.data.IterableDataset):
             # Randomize the dome backgrounds
             self._setup_dome_randomizers()
 
-            # Generate the replicator graphs for the DOME dataset without triggering any writing
+            # Run another preview to generate the replicator graphs for the DOME dataset without triggering any writing
             rep.orchestrator.preview()
 
         # Randomize the distractors by applying forces to them and changing their materials
@@ -517,7 +520,10 @@ class RandomScenario(torch.utils.data.IterableDataset):
 
         print(f"ID: {self.cur_idx}/{self.train_size - 1}")
         rep.orchestrator.step(rt_subframes=4)
-        self.cur_idx += 1
+
+        # Check that there was valid training data in the last frame (target object(s) visible to camera)
+        if self.writer.is_last_frame_valid():
+            self.cur_idx += 1
 
         # Check if last frame has been reached
         if self.cur_idx >= self.train_size:
@@ -533,6 +539,7 @@ dataset = RandomScenario(
     output_folder=args.output_folder,
     use_s3=args.use_s3,
     bucket=args.bucket,
+    s3_region=args.s3_region,
     endpoint=args.endpoint,
     writer=args.writer.lower(),
     test=args.test,
@@ -556,7 +563,7 @@ if dataset.result:
         # Dataset generation loop
         for _ in dataset:
             if dataset.last_frame_reached:
-                print(f"Stopping generation loop at index..")
+                print(f"Stopping generation loop at index {dataset.cur_idx}..")
                 break
             if dataset.exiting:
                 break

@@ -8,18 +8,18 @@ CONFIG:
 
 # Index of part in array of classes in PoseCNN training
 CLASS_NAME_TO_INDEX:
-  _01_apple: 1
-  _02_apple: 2
-  _03_apple: 3
-  _04_apple: 4
-  _05_apple: 5
+  output: 1
+  apple2_uv: 2
+  apple_2_5k: 3
+  red_apple: 4
+  applei_000: 5
 
 OBJECTS_TO_GENERATE: 
-- { part_name: 001_apple, num: 1, prim_type: _01_apple } 
-- { part_name: 002_apple, num: 1, prim_type: _02_apple }
-- { part_name: 003_apple, num: 1, prim_type: _03_apple }
-- { part_name: 004_apple, num: 1, prim_type: _04_apple }
-- { part_name: 005_apple, num: 1, prim_type: _05_apple }
+- { part_name: apple1, num: 1, prim_type: output } 
+- { part_name: apple2, num: 1, prim_type: apple2_uv }
+- { part_name: apple3, num: 1, prim_type: apple_2_5k }
+- { part_name: apple4, num: 1, prim_type: red_apple }
+- { part_name: apple5, num: 1, prim_type: applei_000 }
 
 # Maximum force component to apply to objects to keep them in motion
 FORCE_RANGE: 30
@@ -27,19 +27,20 @@ FORCE_RANGE: 30
 # Camera Intrinsics
 WIDTH: 1280
 HEIGHT: 720
-F_X: 700.150000000000
-F_Y: 700.390000000000
-C_X: 634.970000000000
-C_Y: 362.986000000000
+F_X: 698.3570
+F_Y: 698.1600
+C_X: 640.1320
+C_Y: 361.3480
 # Default Camera Horizontal Aperture
+# HORIZONTAL_APERTURE: 5.594229808
 HORIZONTAL_APERTURE: 20.955
 
 # Number of sphere lights added to the scene
 NUM_LIGHTS: 6
 
 # Minimum and maximum distances of objects away from the camera (along the optical axis)
-MIN_DISTANCE: 0.2
-MAX_DISTANCE: 1.2
+MIN_DISTANCE: 0.3
+MAX_DISTANCE: 2.0
 
 # Rotation of camera rig with respect to world frame, expressed as XYZ euler angles
 CAMERA_RIG_ROTATION:
@@ -92,16 +93,15 @@ NUM_MESH_OBJECTS: 30
 MESH_FRACTION_GLASS: 0.15
 MESH_FILENAMES:
 - 002_master_chef_can
-- 003_cracker_box
 - 004_sugar_box
 - 005_tomato_soup_can
 - 006_mustard_bottle
 - 007_tuna_fish_can
-- '008_pudding_box'
-- '009_gelatin_box'
+- 008_pudding_box
+- 009_gelatin_box
 - 010_potted_meat_can
 - 011_banana
-- '019_pitcher_base'
+- 019_pitcher_base
 - 021_bleach_cleanser
 - 024_bowl
 - 025_mug
